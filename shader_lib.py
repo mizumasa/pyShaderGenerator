@@ -25,9 +25,13 @@ def saveShader(filename,code):
     f.write(code)
     f.close()
     
+def getTimeStamp():
+    from datetime import datetime
+    buf = datetime.now()
+    return buf.strftime("%Y")[2:] + buf.strftime("%m%d_%H%M%S")
+
 def main():
-    code = makeNewShader()
-    saveShader(SAVE_PATH,code)
+    makeNewShader(SAVE_PATH)
     return
 
 if __name__ == "__main__":

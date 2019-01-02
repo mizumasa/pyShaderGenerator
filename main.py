@@ -3,6 +3,8 @@ import sys
 import time
 import shader_generator as sg
 
+GLSL_SANDBOX = True
+
 def test():
     codeGenerator = sg.Generator()
     codeGenerator.init()
@@ -11,26 +13,24 @@ def test():
     codeGenerator.extend()
     textObj = codeGenerator.getTextObj()
     fragment_shader_code = """
-        uniform float texture_width;
-        uniform float texture_height;
-        uniform float texture_posx;
-        uniform float texture_posy;
+        uniform vec2 resolution;
         uniform float time;
-
         void main() {
-            vec2 resolution = vec2( texture_width , texture_height);
-            vec2 point0 = vec2( texture_posx , texture_posy);
-            vec2 uv = -1. + 2. * (gl_FragCoord.xy - point0) / resolution.xy;
+            vec2 uv = -1. + 2. * gl_FragCoord.xy / resolution.xy;
     """
+    if GLSL_SANDBOX:
+        fragment_shader_code = """
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        """ + fragment_shader_code
     fragment_shader_code += textObj["line"]
     fragment_shader_code += "}"
     print(fragment_shader_code)
-
 
 def main(argv):
     test()
     return
 
 if __name__ == "__main__":
-    print(sys.argv)
     main(sys.argv)
